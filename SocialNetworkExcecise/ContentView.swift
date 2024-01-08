@@ -8,15 +8,42 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject var feedViewModel = FeedViewModel()
+
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            if feedViewModel.feedColumns.isEmpty {
+                loginView
+            } else {
+                FeedView(feedViewModel: feedViewModel)
+            }
         }
-        .padding()
     }
+    
+    var loginView: some View {
+        VStack {
+            if feedViewModel.isLoading {
+                ProgressView()
+            }
+            Text("Login")
+                .padding()
+            Button(action: {
+                feedViewModel.getData()
+            }, label: {
+                Text("Get Data")
+            })
+            .padding()
+            Button(action: {
+                Defaults.removeTokens()
+            }, label: {
+                Text("Clear tokens")
+            })
+            .padding()
+        }
+    }
+    
+
 }
 
 #Preview {
